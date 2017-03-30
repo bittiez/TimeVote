@@ -1,0 +1,11 @@
+name: TimeVote
+version: 1.15.0
+author: bittiez
+main: US.bittiez.TimeVote.main
+commands:
+    timevote:
+        description: Various TimeVote commands
+        usage: /TimeVote
+permissions:
+    TimeVote.reload:
+        description: Allows the use of /TimeVote reload
