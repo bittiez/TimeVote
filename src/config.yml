@@ -17,3 +17,4 @@ vote_percent: 0.20
 starting_vote:
  - "&6[TimeVote] &a[USERNAME] &9has started a time vote!"
  - "&6[TimeVote] &9If you want to vote for [DAYNIGHT] type &a/VoteTime vote &9it needs [VOTES] vote(s) to pass!"
+ err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"

@@ -18,6 +18,7 @@ public class main extends JavaPlugin {
     public static boolean debug = true;
     public static Logger log;
     public FileConfiguration config = getConfig();
+    public Boolean voteInProgress = false;
 
     private Boolean startingCost = true;
     private BukkitScheduler scheduler = getServer().getScheduler();
@@ -47,25 +48,33 @@ public class main extends JavaPlugin {
                 if ((args[0].equalsIgnoreCase("new") || args[0].equalsIgnoreCase("start")) && sender.hasPermission(PERMISSIONS.PLAYER.START_VOTE)) {
                     if (args.length > 1 && (args[1].equalsIgnoreCase("day") || args[1].equalsIgnoreCase("night"))) {
                         int time = 0;
-                        if(args[1].equalsIgnoreCase("day"))
+                        if (args[1].equalsIgnoreCase("day"))
                             time = TIME.DAY;
-                        else if(args[1].equalsIgnoreCase("night"))
+                        else if (args[1].equalsIgnoreCase("night"))
                             time = TIME.NIGHT;
                         String timeString = timeString(time);
 
                         if (startingCost) {
 
                         } else {
-                            if(debug)
-                                log.info(sender.getName() + " started a new timevote!");
-                            for (Player p : ((Player) sender).getWorld().getPlayers())
-                                for (String m : config.getStringList("starting_vote")) {
-                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                            m.replace("[USERNAME]", sender.getName())
-                                            .replace("[DAYNIGHT]", timeString)
-                                            .replace("[VOTES]", "" + getPlayerPercent(((Player) sender).getWorld(), ((float)config.getDouble("vote_percent", 0.20))))
-                                    ));
-                                }
+                            if (!voteInProgress) {
+                                if (debug)
+                                    log.info(sender.getName() + " started a new timevote!");
+
+                                voteInProgress = true;
+
+                                for (Player p : ((Player) sender).getWorld().getPlayers())
+                                    for (String m : config.getStringList("starting_vote")) {
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                                m.replace("[USERNAME]", sender.getName())
+                                                        .replace("[DAYNIGHT]", timeString)
+                                                        .replace("[VOTES]", "" + getPlayerPercent(((Player) sender).getWorld(), ((float) config.getDouble("vote_percent", 0.20))))
+                                        ));
+                                    }
+                            } else {
+                                sender.sendMessage(config.getString("err_vote_in_progress"));
+                                return true;
+                            }
                         }
                     } else {
                         sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night)", "Starts a new time vote."));
@@ -108,9 +117,9 @@ public class main extends JavaPlugin {
         saveDefaultConfig();
     }
 
-    private static int getPlayerPercent(World world, float percent){
+    private static int getPlayerPercent(World world, float percent) {
         int playerCount = world.getPlayerCount();
-        return (int)Math.ceil(playerCount*(percent/100.0f));
+        return (int) Math.ceil(playerCount * (percent / 100.0f));
     }
 
     private static String timeString(int time) {
