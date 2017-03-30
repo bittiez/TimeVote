@@ -1,5 +1,7 @@
 package US.bittiez.TimeVote;
 
+import US.bittiez.TimeVote.UpdateChecker.UpdateChecker;
+import US.bittiez.TimeVote.UpdateChecker.UpdateStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,14 +23,17 @@ public class main extends JavaPlugin {
     public void onEnable() {
         log = getLogger();
         createConfig();
-
+        UpdateStatus update = new UpdateChecker("https://github.com/bittiez/TimeVote/raw/master/src/plugin.yml", getDescription().getVersion()).getStatus();
+        if(update.HasUpdate){
+            genVersionOutdatedMessage(update.LocalVersion, update.RemoteVersion);
+        }
     }
 
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         if (cmd.getName().equalsIgnoreCase("TimeVote")) {
             if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("TimeVote.reload")) {
+                if (args[0].equalsIgnoreCase("reload") && sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG)) {
                     this.reloadConfig();
                     config = getConfig();
                     sender.sendMessage(ChatColor.GOLD + "TimeVote Config reloaded!");

@@ -9,3 +9,6 @@ commands:
 permissions:
     TimeVote.reload:
         description: Allows the use of /TimeVote reload
+    TimeVote.updates:
+        description: Receive update notifications
+        default: op
