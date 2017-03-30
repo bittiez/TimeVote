@@ -53,6 +53,7 @@ public class main extends JavaPlugin {
                         else if (args[1].equalsIgnoreCase("night"))
                             time = TIME.NIGHT;
                         String timeString = timeString(time);
+                        World world = ((Player) sender).getWorld();
 
                         if (startingCost) {
 
@@ -63,12 +64,23 @@ public class main extends JavaPlugin {
 
                                 voteInProgress = true;
 
+                                scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        voteInProgress = false;
+                                        for (Player p : world.getPlayers()){
+                                            //Need [STATUS], [VOTES], [DAYNIGHT]
+                                            p.sendMessage(config.getString("vote_ended"));
+                                        }
+                                    }
+                                }, config.getLong("vote_length") * 20L); //Vote length in seconds * 20 ticks / second
+
                                 for (Player p : ((Player) sender).getWorld().getPlayers())
                                     for (String m : config.getStringList("starting_vote")) {
                                         p.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                                 m.replace("[USERNAME]", sender.getName())
                                                         .replace("[DAYNIGHT]", timeString)
-                                                        .replace("[VOTES]", "" + getPlayerPercent(((Player) sender).getWorld(), ((float) config.getDouble("vote_percent", 0.20))))
+                                                        .replace("[VOTES]", "" + getPlayerPercent(world, ((float) config.getDouble("vote_percent", 0.20))))
                                         ));
                                     }
                             } else {

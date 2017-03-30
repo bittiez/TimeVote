@@ -13,8 +13,18 @@ starting_cost: 0
 # 0.90 = 90%
 vote_percent: 0.20
 
-# Message config
+# Vote length in seconds, 120 = 2 minutes
+vote_length: 120.0
+
+# Message config, Optional placeholders: [USERNAME], [DAYNIGHT] [VOTES]
 starting_vote:
  - "&6[TimeVote] &a[USERNAME] &9has started a time vote!"
  - "&6[TimeVote] &9If you want to vote for [DAYNIGHT] type &a/VoteTime vote &9it needs [VOTES] vote(s) to pass!"
- err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"
+
+err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"
+
+# Optional placeholders:
+# [STATUS] = passed or failed
+# [VOTES] = how many players voted for it
+# [DAYNIGHT] = day or night
+vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES] &9votes for &a[DAYNIGHT]&9!"
