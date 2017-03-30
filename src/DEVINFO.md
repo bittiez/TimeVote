@@ -11,7 +11,7 @@ Voting lasts 2(configurable) minutes?
 - Add /timevote usage messages for allowed commands
   - Example: Player says /timevote, respond with /timevote new | vote | confirm
 - Add optional cost to config
-- Add config for day/night times(example: 0 for day, 2000 for night or similar)
+- ~~Add config for day/night times(example: 0 for day, 2000 for night or similar)~~
 - Add config option for voting length (default: 2 minutes)
 - Add config messages
 - Add announcement delay in config

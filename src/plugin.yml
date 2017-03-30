@@ -7,6 +7,8 @@ commands:
         description: Various TimeVote commands
         usage: /TimeVote
 permissions:
+    TimeVote.start:
+        description: Allows the use of /TimeVote new|start
     TimeVote.reload:
         description: Allows the use of /TimeVote reload
     TimeVote.updates:

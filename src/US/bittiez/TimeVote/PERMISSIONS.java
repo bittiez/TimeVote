@@ -9,6 +9,6 @@ public class PERMISSIONS {
         public static final String RELOAD_CONFIG = "TimeVote.reload";
     }
     public class PLAYER {
-
+        public static final String START_VOTE = "TimeVote.start";
     }
 }
