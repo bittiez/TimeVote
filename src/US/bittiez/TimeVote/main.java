@@ -56,12 +56,15 @@ public class main extends JavaPlugin {
                         if (startingCost) {
 
                         } else {
+                            if(debug)
+                                log.info(sender.getName() + " started a new timevote!");
                             for (Player p : ((Player) sender).getWorld().getPlayers())
                                 for (String m : config.getStringList("starting_vote")) {
-                                    sender.sendMessage(
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                             m.replace("[USERNAME]", sender.getName())
                                             .replace("[DAYNIGHT]", timeString)
-                                    );
+                                            .replace("[VOTES]", "" + getPlayerPercent(((Player) sender).getWorld(), ((float)config.getDouble("vote_percent", 0.20))))
+                                    ));
                                 }
                         }
                     } else {
@@ -103,6 +106,11 @@ public class main extends JavaPlugin {
     private void createConfig() {
         config.options().copyDefaults();
         saveDefaultConfig();
+    }
+
+    private static int getPlayerPercent(World world, float percent){
+        int playerCount = world.getPlayerCount();
+        return (int)Math.ceil(playerCount*(percent/100.0f));
     }
 
     private static String timeString(int time) {
