@@ -1,15 +1,14 @@
 # Basic Ideas
 
 Player can initiate a vote with /timevote new (Day | Night)
-- Possible option to make starting votes cost money? Then the player would be asked to confirm before starting the vote
 
 **World** announcement occurs saying a vote is going on for (Day | Night), use /timevote vote  
 Voting lasts 2(configurable) minutes?
 
 
 # To-Do
-- Add config option for voting length (default: 2 minutes)
 - Add announcement delay in config
+- Add confirm message to pay to start vote
 
 
 ## Player confirmation

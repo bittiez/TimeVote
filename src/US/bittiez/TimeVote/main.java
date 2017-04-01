@@ -1,12 +1,12 @@
 package US.bittiez.TimeVote;
 
+import US.bittiez.TimeVote.Config.Configurator;
 import US.bittiez.TimeVote.UpdateChecker.UpdateChecker;
 import US.bittiez.TimeVote.UpdateChecker.UpdateStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -17,17 +17,18 @@ import java.util.logging.Logger;
 public class main extends JavaPlugin {
     public static boolean debug = true;
     public static Logger log;
-    public FileConfiguration config = getConfig();
-    public Boolean voteInProgress = false;
 
+    private Vote vote = new Vote();
+    private Configurator configurator = new Configurator();
     private Boolean startingCost = true;
     private BukkitScheduler scheduler = getServer().getScheduler();
 
     @Override
     public void onEnable() {
         log = getLogger();
-        createConfig();
-        startingCost = config.getInt("starting_cost", 500) > 0;
+        configurator.setConfig(this);
+        configurator.saveDefaultConfig(this);
+        startingCost = configurator.config.getInt("starting_cost", 500) > 0;
 
         UpdateStatus update = new UpdateChecker("https://github.com/bittiez/TimeVote/raw/master/src/plugin.yml", getDescription().getVersion()).getStatus();
         if (update.HasUpdate) {
@@ -40,56 +41,50 @@ public class main extends JavaPlugin {
         if (cmd.getName().equalsIgnoreCase("TimeVote")) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("reload") && sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG)) {
-                    this.reloadConfig();
-                    config = getConfig();
+                    configurator.reloadPluginDefaultConfig(this);
+                    startingCost = configurator.config.getInt("starting_cost", 500) > 0;
                     sender.sendMessage(ChatColor.GOLD + "TimeVote Config reloaded!");
                     return true;
                 }
-                if ((args[0].equalsIgnoreCase("new") || args[0].equalsIgnoreCase("start")) && sender.hasPermission(PERMISSIONS.PLAYER.START_VOTE)) {
+                if ((args[0].equalsIgnoreCase("new") || args[0].equalsIgnoreCase("start")) && sender.hasPermission(PERMISSIONS.PLAYER.START_VOTE) && sender instanceof Player) {
                     if (args.length > 1 && (args[1].equalsIgnoreCase("day") || args[1].equalsIgnoreCase("night"))) {
-                        int time = 0;
+                        if (vote.getIsRunning()) {
+                            sender.sendMessage(colorize(configurator.config.getString("err_vote_in_progress")));
+                            return true;
+                        }
+
+                        //The vote is not running, lets set up the vote options
                         if (args[1].equalsIgnoreCase("day"))
-                            time = TIME.DAY;
+                            vote.setDayNight(TIME.DAY);
                         else if (args[1].equalsIgnoreCase("night"))
-                            time = TIME.NIGHT;
-                        String timeString = timeString(time);
-                        World world = ((Player) sender).getWorld();
+                            vote.setDayNight(TIME.NIGHT);
+
+                        vote.setWorld(((Player) sender).getWorld());
 
                         if (startingCost) {
-
+                            //CHECK IF PAYMENT GOES THROUGH
+                            startVote((Player) sender);
                         } else {
-                            if (!voteInProgress) {
-                                if (debug)
-                                    log.info(sender.getName() + " started a new timevote!");
+                            if (debug)
+                                log.info(sender.getName() + " started a new timevote!");
+                            startVote((Player) sender);
 
-                                voteInProgress = true;
-
-                                scheduler.scheduleSyncDelayedTask(this, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        voteInProgress = false;
-                                        for (Player p : world.getPlayers()){
-                                            //Need [STATUS], [VOTES], [DAYNIGHT]
-                                            p.sendMessage(config.getString("vote_ended"));
-                                        }
-                                    }
-                                }, config.getLong("vote_length") * 20L); //Vote length in seconds * 20 ticks / second
-
-                                for (Player p : ((Player) sender).getWorld().getPlayers())
-                                    for (String m : config.getStringList("starting_vote")) {
-                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                                m.replace("[USERNAME]", sender.getName())
-                                                        .replace("[DAYNIGHT]", timeString)
-                                                        .replace("[VOTES]", "" + getPlayerPercent(world, ((float) config.getDouble("vote_percent", 0.20))))
-                                        ));
-                                    }
-                            } else {
-                                sender.sendMessage(config.getString("err_vote_in_progress"));
-                                return true;
-                            }
                         }
                     } else {
                         sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night)", "Starts a new time vote."));
+                    }
+                    return true;
+                }
+                if(args[0].equalsIgnoreCase("vote") && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player){
+                    if(!vote.getIsRunning()){
+                        sender.sendMessage(colorize(configurator.config.getString("err_not_in_progress")));
+                        return true;
+                    }
+
+                    if(vote.addVote((Player)sender)){
+                        sender.sendMessage(colorize(configurator.config.getString("you_voted")));
+                    } else {
+                        sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
                     }
                     return true;
                 }
@@ -106,11 +101,56 @@ public class main extends JavaPlugin {
         return false;
     }
 
+    private void startVote(Player sender) {
+        vote.setRunning(true);
+
+        //Set the end vote time -------------------------------------------------
+        scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                vote.setRunning(false);
+                vote.setPassed(vote.getVotes() >= vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)));
+
+                //Need [STATUS], [VOTES], [DAYNIGHT], [REQVOTES]
+                String voteEnded = configurator.config.getString("vote_ended");
+                voteEnded = voteEnded.replace("[STATUS]", vote.getPassed() ? "passed" : "failed")
+                .replace("[VOTES]", "" + vote.getVotes())
+                .replace("[REQVOTES]", ""+ vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+                .replace("[DAYNIGHT]", TIME.timeString(vote.getDayNight()));
+                voteEnded = colorize(voteEnded);
+
+                for (Player p : vote.getWorld().getPlayers())
+                    p.sendMessage(voteEnded);
+
+                if(vote.getPassed()){
+                    setWorldTime(vote.getWorld(), vote.getDayNight());
+                }
+                vote.reset();
+            }
+        }, configurator.config.getLong("vote_length") * 20L); //Vote length in seconds * 20 ticks / second
+
+        //Let all players know about the vote
+        String timeString = TIME.timeString(vote.getDayNight()); //Either "day" or "night"
+        for (Player p : ((Player) sender).getWorld().getPlayers())
+            for (String m : configurator.config.getStringList("starting_vote")) {
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        m.replace("[USERNAME]", sender.getName())
+                                .replace("[DAYNIGHT]", timeString)
+                                .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+                ));
+            }
+
+    }
+
+    private String colorize(String text){
+        return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
     private void setWorldTime(World world, int time) {
         if (time == TIME.DAY) {
-            world.setTime(config.getLong("day"));
+            world.setTime(configurator.config.getLong("day"));
         } else if (time == TIME.NIGHT) {
-            world.setTime(config.getLong("night"));
+            world.setTime(configurator.config.getLong("night"));
         } else {
             log.warning("[M1]There was an error trying to set the world time.");
         }
@@ -124,22 +164,4 @@ public class main extends JavaPlugin {
         return "Your version(" + version + ") of " + ChatColor.GOLD + " TimeVote " + ChatColor.RESET + "is not up to date(" + updatedVersion + "), you can get the latest version at https://github.com/bittiez/TimeVote/releases";
     }
 
-    private void createConfig() {
-        config.options().copyDefaults();
-        saveDefaultConfig();
-    }
-
-    private static int getPlayerPercent(World world, float percent) {
-        int playerCount = world.getPlayerCount();
-        return (int) Math.ceil(playerCount * (percent / 100.0f));
-    }
-
-    private static String timeString(int time) {
-        return time == TIME.DAY ? "day" : "night";
-    }
-
-    private class TIME {
-        public static final int DAY = 0;
-        public static final int NIGHT = 1;
-    }
 }

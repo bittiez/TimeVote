@@ -19,12 +19,18 @@ vote_length: 120.0
 # Message config, Optional placeholders: [USERNAME], [DAYNIGHT] [VOTES]
 starting_vote:
  - "&6[TimeVote] &a[USERNAME] &9has started a time vote!"
- - "&6[TimeVote] &9If you want to vote for [DAYNIGHT] type &a/VoteTime vote &9it needs [VOTES] vote(s) to pass!"
+ - "&6[TimeVote] &9If you want to vote for &a[DAYNIGHT] &9type &a/TimeVote vote &9it needs &a[VOTES] &9vote(s) to pass!"
 
 err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"
+err_not_in_progress: "&6[TimeVote] &4There is no vote in progress right now!"
 
 # Optional placeholders:
 # [STATUS] = passed or failed
 # [VOTES] = how many players voted for it
+# [REQVOTES] = how many votes it needed to pass
 # [DAYNIGHT] = day or night
 vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES] &9votes for &a[DAYNIGHT]&9!"
+
+you_voted: "&6[TimeVote] &9Thanks for voting!"
+
+you_already_voted: "&6[TimeVote] &4You already voted!"

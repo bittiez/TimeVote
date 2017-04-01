@@ -10,5 +10,6 @@ public class PERMISSIONS {
     }
     public class PLAYER {
         public static final String START_VOTE = "TimeVote.start";
+        public static final String VOTE = "TimeVote.vote";
     }
 }
