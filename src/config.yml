@@ -21,9 +21,10 @@ vote_length: 120.0
 # [DAYNIGHT] = Day or Night
 # [VOTES] = Required votes to pass
 # [TIME] = Seconds till vote ends
+# [WORLD] = World that will have changed time
 starting_vote:
  - "&6[TimeVote] &a[USERNAME] &9has started a time vote!"
- - "&6[TimeVote] &9If you want to vote for &a[DAYNIGHT] &9type &a/TimeVote vote &9it needs &a[VOTES] &9vote(s) to pass!"
+ - "&6[TimeVote] &9If you want to vote for &a[DAYNIGHT] &9in &a[WORLD] &9type &a/TimeVote vote &9it needs &a[VOTES] &9vote(s) to pass!"
  - "&6[TimeVote] &9The vote will end in [TIME] seconds!"
 
 err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"

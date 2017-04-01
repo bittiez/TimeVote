@@ -18,6 +18,8 @@ Players will vote to change the time in the current world to day or night
 - Configurable messages
 - Configurable vote length
 - Configurable percent of players required to pass the vote
+- Per world time change, the timevote will only change in the world that was voted for
+- Players can only vote from the world that is being voted on
 - Optional pay to start a vote `Not yet implemented`
 
 # Usage
@@ -41,8 +43,6 @@ Players will vote to change the time in the current world to day or night
 [View default configuration file here](../../blob/master/src/config.yml)
 
 # To Do
-- Check on player vote if the player is in the vote world
 - Add support for votes from multiple worlds at once
 - Add config to disable certain worlds
 - Auto vote for person starting vote
-- Add [WORLD] to config options

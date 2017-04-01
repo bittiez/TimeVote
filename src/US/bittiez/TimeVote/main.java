@@ -107,6 +107,7 @@ public class main extends JavaPlugin {
 
     private void startVote(Player sender) {
         vote.setRunning(true);
+        vote.addVote(sender);
 
         //Set the end vote time -------------------------------------------------
         scheduler.scheduleSyncDelayedTask(this, new Runnable() {
@@ -141,6 +142,7 @@ public class main extends JavaPlugin {
                                 .replace("[DAYNIGHT]", timeString)
                                 .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
                                 .replace("[TIME]", configurator.config.getLong("vote_length") + "")
+                                .replace("[WORLD]", vote.getWorld().getName())
                 ));
             }
 
