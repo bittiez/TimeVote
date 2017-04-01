@@ -111,7 +111,6 @@ public class main extends JavaPlugin {
                 vote.setRunning(false);
                 vote.setPassed(vote.getVotes() >= vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)));
 
-                //Need [STATUS], [VOTES], [DAYNIGHT], [REQVOTES]
                 String voteEnded = configurator.config.getString("vote_ended");
                 voteEnded = voteEnded.replace("[STATUS]", vote.getPassed() ? "passed" : "failed")
                 .replace("[VOTES]", "" + vote.getVotes())
