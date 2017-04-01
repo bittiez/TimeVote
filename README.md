@@ -20,7 +20,7 @@ Players will vote to change the time in the current world to day or night
 - Configurable percent of players required to pass the vote
 - Per world time change, the timevote will only change in the world that was voted for
 - Players can only vote from the world that is being voted on
-- Optional pay to start a vote `Not yet implemented`
+- Disable specific worlds in the config
 
 # Usage
 
@@ -44,5 +44,4 @@ Players will vote to change the time in the current world to day or night
 
 # To Do
 - Add support for votes from multiple worlds at once
-- Add config to disable certain worlds
-- Auto vote for person starting vote
+- Add option to pay to start a vote
