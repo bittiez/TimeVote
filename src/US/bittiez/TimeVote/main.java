@@ -88,6 +88,7 @@ public class main extends JavaPlugin {
                     }
                     return true;
                 }
+                return true;
             } else {
                 if (sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG))
                     sender.sendMessage(genUsageString("/TimeVote reload", "Reloads the config file."));
@@ -96,7 +97,6 @@ public class main extends JavaPlugin {
                     sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night)", "Starts a new time vote."));
                 return true;
             }
-            return false;
         }
         return false;
     }
