@@ -16,10 +16,15 @@ vote_percent: 0.20
 # Vote length in seconds, 120 = 2 minutes
 vote_length: 120.0
 
-# Message config, Optional placeholders: [USERNAME], [DAYNIGHT] [VOTES]
+# Message config, Optional placeholders:
+# [USERNAME] = Username who started the vote
+# [DAYNIGHT] = Day or Night
+# [VOTES] = Required votes to pass
+# [TIME] = Seconds till vote ends
 starting_vote:
  - "&6[TimeVote] &a[USERNAME] &9has started a time vote!"
  - "&6[TimeVote] &9If you want to vote for &a[DAYNIGHT] &9type &a/TimeVote vote &9it needs &a[VOTES] &9vote(s) to pass!"
+ - "&6[TimeVote] &9The vote will end in [TIME] seconds!"
 
 err_vote_in_progress: "&6[TimeVote] &4There is already a time vote in progress!"
 err_not_in_progress: "&6[TimeVote] &4There is no vote in progress right now!"
@@ -32,5 +37,7 @@ err_not_in_progress: "&6[TimeVote] &4There is no vote in progress right now!"
 vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES]&9/&a[REQVOTES] &9votes for &a[DAYNIGHT]&9!"
 
 you_voted: "&6[TimeVote] &9Thanks for voting!"
-
 you_already_voted: "&6[TimeVote] &4You already voted!"
+
+# [WORLD] = world the vote is taking place in
+err_wrong_world: "&6[TimeVote] &4You can't vote from this world, the vote is taking place in &a[WORLD]!"

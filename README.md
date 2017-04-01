@@ -41,7 +41,6 @@ Players will vote to change the time in the current world to day or night
 [View default configuration file here](../../blob/master/src/config.yml)
 
 # To Do
-- Add a message telling you how long the vote has left
 - Check on player vote if the player is in the vote world
 - Add support for votes from multiple worlds at once
 - Add config to disable certain worlds

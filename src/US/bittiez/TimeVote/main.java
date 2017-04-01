@@ -3,6 +3,8 @@ package US.bittiez.TimeVote;
 import US.bittiez.TimeVote.Config.Configurator;
 import US.bittiez.TimeVote.UpdateChecker.UpdateChecker;
 import US.bittiez.TimeVote.UpdateChecker.UpdateStatus;
+import US.bittiez.TimeVote.Vote.VOTE_STATUS;
+import US.bittiez.TimeVote.Vote.Vote;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -75,16 +77,18 @@ public class main extends JavaPlugin {
                     }
                     return true;
                 }
-                if(args[0].equalsIgnoreCase("vote") && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player){
-                    if(!vote.getIsRunning()){
+                if (args[0].equalsIgnoreCase("vote") && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player) {
+                    if (!vote.getIsRunning()) {
                         sender.sendMessage(colorize(configurator.config.getString("err_not_in_progress")));
                         return true;
                     }
-
-                    if(vote.addVote((Player)sender)){
+                    int voteStatus = vote.addVote((Player) sender).status;
+                    if (voteStatus == VOTE_STATUS.VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_voted")));
-                    } else {
+                    } else if(voteStatus == VOTE_STATUS.ALREADY_VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
+                    } else if(voteStatus == VOTE_STATUS.WRONG_WORLD) {
+                        sender.sendMessage(colorize(configurator.config.getString("err_wrong_world").replace("[WORLD]", vote.getWorld().getName())));
                     }
                     return true;
                 }
@@ -113,15 +117,15 @@ public class main extends JavaPlugin {
 
                 String voteEnded = configurator.config.getString("vote_ended");
                 voteEnded = voteEnded.replace("[STATUS]", vote.getPassed() ? "passed" : "failed")
-                .replace("[VOTES]", "" + vote.getVotes())
-                .replace("[REQVOTES]", ""+ vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
-                .replace("[DAYNIGHT]", TIME.timeString(vote.getDayNight()));
+                        .replace("[VOTES]", "" + vote.getVotes())
+                        .replace("[REQVOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+                        .replace("[DAYNIGHT]", TIME.timeString(vote.getDayNight()));
                 voteEnded = colorize(voteEnded);
 
                 for (Player p : vote.getWorld().getPlayers())
                     p.sendMessage(voteEnded);
 
-                if(vote.getPassed()){
+                if (vote.getPassed()) {
                     setWorldTime(vote.getWorld(), vote.getDayNight());
                 }
                 vote.reset();
@@ -132,16 +136,17 @@ public class main extends JavaPlugin {
         String timeString = TIME.timeString(vote.getDayNight()); //Either "day" or "night"
         for (Player p : ((Player) sender).getWorld().getPlayers())
             for (String m : configurator.config.getStringList("starting_vote")) {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                p.sendMessage(colorize(
                         m.replace("[USERNAME]", sender.getName())
                                 .replace("[DAYNIGHT]", timeString)
                                 .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+                                .replace("[TIME]", configurator.config.getLong("vote_length") + "")
                 ));
             }
 
     }
 
-    private String colorize(String text){
+    private String colorize(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 

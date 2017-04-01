@@ -1,5 +1,6 @@
-package US.bittiez.TimeVote;
+package US.bittiez.TimeVote.Vote;
 
+import US.bittiez.TimeVote.TIME;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -53,12 +54,14 @@ public class Vote {
         return votes;
     }
 
-    public Boolean addVote(Player p) {
+    public VoteStatus addVote(Player p) {
         if(UUIDVotes.contains(p.getUniqueId()))
-            return false;
+            return new VoteStatus(VOTE_STATUS.ALREADY_VOTED);
+        if(p.getWorld() != world)
+            return new VoteStatus(VOTE_STATUS.WRONG_WORLD);
         UUIDVotes.add(p.getUniqueId());
         this.votes++;
-        return true;
+        return new VoteStatus(VOTE_STATUS.VOTED);
     }
 
     public void setVotes(int votes) {
@@ -76,5 +79,12 @@ public class Vote {
 
     public void setPassed(Boolean passed) {
         this.passed = passed;
+    }
+
+    public class VoteStatus {
+        public int status;
+        public VoteStatus(int VOTE_STATUS){
+            status = VOTE_STATUS;
+        }
     }
 }
