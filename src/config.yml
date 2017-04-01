@@ -29,7 +29,7 @@ err_not_in_progress: "&6[TimeVote] &4There is no vote in progress right now!"
 # [VOTES] = how many players voted for it
 # [REQVOTES] = how many votes it needed to pass
 # [DAYNIGHT] = day or night
-vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES] &9votes for &a[DAYNIGHT]&9!"
+vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES]&9/&a[REQVOTES] &9votes for &a[DAYNIGHT]&9!"
 
 you_voted: "&6[TimeVote] &9Thanks for voting!"
 
