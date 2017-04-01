@@ -63,12 +63,18 @@ public class main extends JavaPlugin {
 
                         vote.setWorld(((Player) sender).getWorld());
 
+                        for (String disabledWorld : configurator.config.getStringList("disabled_worlds")) {
+                            if (disabledWorld.equals(vote.getWorld().getName())) {
+                                sender.sendMessage(colorize(configurator.config.getString("err_world_disabled")));
+                                vote.reset();
+                                return true;
+                            }
+                        }
+
                         if (startingCost) {
                             //CHECK IF PAYMENT GOES THROUGH
                             startVote((Player) sender);
                         } else {
-                            if (debug)
-                                log.info(sender.getName() + " started a new timevote!");
                             startVote((Player) sender);
 
                         }
@@ -85,9 +91,9 @@ public class main extends JavaPlugin {
                     int voteStatus = vote.addVote((Player) sender).status;
                     if (voteStatus == VOTE_STATUS.VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_voted")));
-                    } else if(voteStatus == VOTE_STATUS.ALREADY_VOTED) {
+                    } else if (voteStatus == VOTE_STATUS.ALREADY_VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
-                    } else if(voteStatus == VOTE_STATUS.WRONG_WORLD) {
+                    } else if (voteStatus == VOTE_STATUS.WRONG_WORLD) {
                         sender.sendMessage(colorize(configurator.config.getString("err_wrong_world").replace("[WORLD]", vote.getWorld().getName())));
                     }
                     return true;
@@ -106,6 +112,8 @@ public class main extends JavaPlugin {
     }
 
     private void startVote(Player sender) {
+        if (debug)
+            log.info(sender.getName() + " started a new timevote!");
         vote.setRunning(true);
         vote.addVote(sender);
 
@@ -141,7 +149,7 @@ public class main extends JavaPlugin {
                         m.replace("[USERNAME]", sender.getName())
                                 .replace("[DAYNIGHT]", timeString)
                                 .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
-                                .replace("[TIME]", configurator.config.getLong("vote_length") + "")
+                                .replace("[TIME]", Integer.parseInt(configurator.config.getLong("vote_length") + "") + "")
                                 .replace("[WORLD]", vote.getWorld().getName())
                 ));
             }

@@ -42,3 +42,10 @@ you_already_voted: "&6[TimeVote] &4You already voted!"
 
 # [WORLD] = world the vote is taking place in
 err_wrong_world: "&6[TimeVote] &4You can't vote from this world, the vote is taking place in &a[WORLD]!"
+err_world_disabled: "&6[TimeVote] &4You can't start a vote from this world!"
+
+# Don't allow voting in these worlds, if you don't want any worlds listed here make it look like:
+# disabled_worlds: []
+disabled_worlds:
+ - disabledWorldName
+ - anotherDisabledWorld
