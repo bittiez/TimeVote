@@ -34,7 +34,7 @@ public class main extends JavaPlugin {
 
         UpdateStatus update = new UpdateChecker("https://github.com/bittiez/TimeVote/raw/master/src/plugin.yml", getDescription().getVersion()).getStatus();
         if (update.HasUpdate) {
-            genVersionOutdatedMessage(update.LocalVersion, update.RemoteVersion);
+            log.info(genVersionOutdatedMessage(update.LocalVersion, update.RemoteVersion));
         }
     }
 
