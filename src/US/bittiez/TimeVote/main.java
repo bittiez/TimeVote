@@ -88,16 +88,12 @@ public class main extends JavaPlugin {
                         sender.sendMessage(colorize(configurator.config.getString("err_not_in_progress")));
                         return true;
                     }
-                    int voteStatus = vote.addVote((Player) sender).status;
-                    if (voteStatus == VOTE_STATUS.VOTED) {
-                        sender.sendMessage(colorize(configurator.config.getString("you_voted")));
-                    } else if (voteStatus == VOTE_STATUS.ALREADY_VOTED) {
-                        sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
-                    } else if (voteStatus == VOTE_STATUS.WRONG_WORLD) {
-                        sender.sendMessage(colorize(configurator.config.getString("err_wrong_world").replace("[WORLD]", vote.getWorld().getName())));
-                    }
+                    processVote((Player)sender);
                     return true;
                 }
+                return true;
+            } else if(vote.getIsRunning() && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player) {
+                processVote((Player) sender);
                 return true;
             } else {
                 if (sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG))
@@ -109,6 +105,24 @@ public class main extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    private void processVote(Player sender){
+        int voteStatus = vote.addVote((Player) sender).status;
+        if (voteStatus == VOTE_STATUS.VOTED) {
+            sender.sendMessage(colorize(configurator.config.getString("you_voted")));
+            String voteAnnouncement = colorize(configurator.config.getString("you_voted_announcement")
+                    .replace("[USERNAME]", sender.getName())
+                    .replace("[VOTES]", vote.getVotes() + "")
+                    .replace("[REQVOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20))));
+            if (voteAnnouncement.length() > 0)
+                for (Player p : vote.getWorld().getPlayers())
+                    p.sendMessage(voteAnnouncement);
+        } else if (voteStatus == VOTE_STATUS.ALREADY_VOTED) {
+            sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
+        } else if (voteStatus == VOTE_STATUS.WRONG_WORLD) {
+            sender.sendMessage(colorize(configurator.config.getString("err_wrong_world").replace("[WORLD]", vote.getWorld().getName())));
+        }
     }
 
     private void startVote(Player sender) {

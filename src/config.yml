@@ -38,6 +38,12 @@ err_not_in_progress: "&6[TimeVote] &4There is no vote in progress right now!"
 vote_ended: "&6[TimeVote] &9TimeVote has &a[STATUS] &9with &a[VOTES]&9/&a[REQVOTES] &9votes for &a[DAYNIGHT]&9!"
 
 you_voted: "&6[TimeVote] &9Thanks for voting!"
+
+# Don't want an announcement when a player votes? Change this to you_voted_announcement: ""
+# [USERNAME] = username who voted
+# [VOTES] = current votes
+# [REQVOTES] = required votes
+you_voted_announcement: "&6[TimeVote] &a[USERNAME] &9voted! The vote now has &a[VOTES]&9out of &a[REQVOTES] &9required votes"
 you_already_voted: "&6[TimeVote] &4You already voted!"
 
 # [WORLD] = world the vote is taking place in
