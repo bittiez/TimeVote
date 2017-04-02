@@ -91,6 +91,11 @@ public class main extends JavaPlugin {
                     int voteStatus = vote.addVote((Player) sender).status;
                     if (voteStatus == VOTE_STATUS.VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_voted")));
+                        for (Player p : vote.getWorld().getPlayers())
+                            p.sendMessage(colorize(configurator.config.getString("you_voted_announcement")
+                                    .replace("[USERNAME]", sender.getName())
+                                    .replace("[VOTES]", vote.getVotes() + "")
+                                    .replace("[REQVOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))));
                     } else if (voteStatus == VOTE_STATUS.ALREADY_VOTED) {
                         sender.sendMessage(colorize(configurator.config.getString("you_already_voted")));
                     } else if (voteStatus == VOTE_STATUS.WRONG_WORLD) {
