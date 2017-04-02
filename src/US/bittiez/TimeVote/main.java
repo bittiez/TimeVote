@@ -94,6 +94,7 @@ public class main extends JavaPlugin {
                 return true;
             } else if(vote.getIsRunning() && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player) {
                 processVote((Player) sender);
+                return true;
             } else {
                 if (sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG))
                     sender.sendMessage(genUsageString("/TimeVote reload", "Reloads the config file."));
