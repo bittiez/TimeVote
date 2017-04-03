@@ -24,6 +24,7 @@ public class main extends JavaPlugin {
     private Configurator configurator = new Configurator();
     private Boolean startingCost = true;
     private BukkitScheduler scheduler = getServer().getScheduler();
+    private TimeLapse timeLapse;
 
     @Override
     public void onEnable() {
@@ -175,10 +176,16 @@ public class main extends JavaPlugin {
     }
 
     private void setWorldTime(World world, int time) {
+
+
         if (time == TIME.DAY) {
-            world.setTime(configurator.config.getLong("day"));
+            timeLapse = new TimeLapse(vote.getWorld(), configurator.config.getLong("day"), this);
+            timeLapse.Start();
+            //world.setTime(configurator.config.getLong("day"));
         } else if (time == TIME.NIGHT) {
-            world.setTime(configurator.config.getLong("night"));
+            timeLapse = new TimeLapse(vote.getWorld(), configurator.config.getLong("night"), this);
+            timeLapse.Start();
+            //world.setTime(configurator.config.getLong("night"));
         } else {
             log.warning("[M1]There was an error trying to set the world time.");
         }
