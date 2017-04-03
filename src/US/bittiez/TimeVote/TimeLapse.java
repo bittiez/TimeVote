@@ -7,27 +7,29 @@ public class TimeLapse {
     private World world;
     private Long setTime;
     private Plugin plugin;
-    private Long Increment = 100L;
+    private Long Increment;
 
 
-    public TimeLapse(World world, Long setTime, Plugin plugin){
+    public TimeLapse(World world, Long setTime, Plugin plugin, Long speed) {
         this.world = world;
         this.setTime = setTime;
         this.plugin = plugin;
+        this.Increment = speed;
     }
 
-    public void Start(){
+    public void Start() {
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
                 Increment();
             }
-        }, 10L);
+        }, 5L);
     }
 
-    public void Increment(){
+    public void Increment() {
         Long worldTime = world.getTime();
-        if(worldTime >= setTime - (Increment/2) || worldTime  <= setTime + (Increment/2))
+
+        if (worldTime >= setTime - Increment - 1 && worldTime <= setTime + Increment + 1)
             world.setTime(setTime);
         else {
             world.setTime(worldTime + Increment);

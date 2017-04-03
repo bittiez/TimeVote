@@ -176,16 +176,12 @@ public class main extends JavaPlugin {
     }
 
     private void setWorldTime(World world, int time) {
-
-
         if (time == TIME.DAY) {
-            timeLapse = new TimeLapse(vote.getWorld(), configurator.config.getLong("day"), this);
+            timeLapse = new TimeLapse(world, configurator.config.getLong("day"), this, configurator.config.getLong("time_lapse_speed", 300L));
             timeLapse.Start();
-            //world.setTime(configurator.config.getLong("day"));
         } else if (time == TIME.NIGHT) {
-            timeLapse = new TimeLapse(vote.getWorld(), configurator.config.getLong("night"), this);
+            timeLapse = new TimeLapse(world, configurator.config.getLong("night"), this, configurator.config.getLong("time_lapse_speed", 300L));
             timeLapse.Start();
-            //world.setTime(configurator.config.getLong("night"));
         } else {
             log.warning("[M1]There was an error trying to set the world time.");
         }
