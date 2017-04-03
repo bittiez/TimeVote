@@ -16,6 +16,9 @@ vote_percent: 0.20
 # Vote length in seconds, 120.0 = 2 minutes
 vote_length: 45.0
 
+# Speed of the time lapse
+time_lapse_speed: 300.0
+
 # Message config, Optional placeholders:
 # [USERNAME] = Username who started the vote
 # [DAYNIGHT] = Day or Night
