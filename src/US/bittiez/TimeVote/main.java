@@ -89,11 +89,11 @@ public class main extends JavaPlugin {
                         sender.sendMessage(colorize(configurator.config.getString("err_not_in_progress")));
                         return true;
                     }
-                    processVote((Player)sender);
+                    processVote((Player) sender);
                     return true;
                 }
                 return true;
-            } else if(vote.getIsRunning() && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player) {
+            } else if (vote.getIsRunning() && sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player) {
                 processVote((Player) sender);
                 return true;
             } else {
@@ -108,7 +108,7 @@ public class main extends JavaPlugin {
         return false;
     }
 
-    private void processVote(Player sender){
+    private void processVote(Player sender) {
         int voteStatus = vote.addVote((Player) sender).status;
         if (voteStatus == VOTE_STATUS.VOTED) {
             sender.sendMessage(colorize(configurator.config.getString("you_voted")));
@@ -140,10 +140,20 @@ public class main extends JavaPlugin {
                 vote.setPassed(vote.getVotes() >= vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)));
 
                 String voteEnded = configurator.config.getString("vote_ended");
-                voteEnded = voteEnded.replace("[STATUS]", vote.getPassed() ? "passed" : "failed")
-                        .replace("[VOTES]", "" + vote.getVotes())
-                        .replace("[REQVOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
-                        .replace("[DAYNIGHT]", TIME.timeString(vote.getDayNight()));
+//                voteEnded = voteEnded.replace("[STATUS]", vote.getPassed() ? "passed" : "failed")
+//                        .replace("[VOTES]", "" + vote.getVotes())
+//                        .replace("[REQVOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+//                        .replace("[DAYNIGHT]", TIME.timeString(vote.getDayNight()));
+                voteEnded = convertPlaceHolders(voteEnded,
+                        "",
+                        vote.getDayNight(),
+                        vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)),
+                        vote.getVotes(),
+                        Integer.parseInt(configurator.config.getLong("vote_length") + ""),
+                        vote.getWorld().getName(),
+                        vote.getPassed() ? "passed" : "failed"
+                );
+
                 voteEnded = colorize(voteEnded);
 
                 for (Player p : vote.getWorld().getPlayers())
@@ -157,18 +167,41 @@ public class main extends JavaPlugin {
         }, configurator.config.getLong("vote_length") * 20L); //Vote length in seconds * 20 ticks / second
 
         //Let all players know about the vote
-        String timeString = TIME.timeString(vote.getDayNight()); //Either "day" or "night"
+        //String timeString = TIME.timeString(vote.getDayNight()); //Either "day" or "night"
         for (Player p : ((Player) sender).getWorld().getPlayers())
             for (String m : configurator.config.getStringList("starting_vote")) {
                 p.sendMessage(colorize(
-                        m.replace("[USERNAME]", sender.getName())
-                                .replace("[DAYNIGHT]", timeString)
-                                .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
-                                .replace("[TIME]", Integer.parseInt(configurator.config.getLong("vote_length") + "") + "")
-                                .replace("[WORLD]", vote.getWorld().getName())
+                        convertPlaceHolders(m,
+                                p.getName(),
+                                vote.getDayNight(),
+                                vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)),
+                                vote.getVotes(),
+                                Integer.parseInt(configurator.config.getLong("vote_length") + ""),
+                                vote.getWorld().getName(),
+                                vote.getPassed() ? "passed" : "failed"
+                        )
+
+//                        m.replace("[USERNAME]", sender.getName())
+//                                .replace("[DAYNIGHT]", timeString)
+//                                .replace("[VOTES]", "" + vote.getRequiredVotes((float) configurator.config.getDouble("vote_percent", 0.20)))
+//                                .replace("[TIME]", Integer.parseInt(configurator.config.getLong("vote_length") + "") + "")
+//                                .replace("[WORLD]", vote.getWorld().getName())
                 ));
             }
 
+    }
+
+    public static String convertPlaceHolders(String text, String UserName, int daynight, int requiredVotes, int currentVotes, int time, String world, String status) {
+        text = text
+                .replace("[USERNAME]", UserName)
+                .replace("[DAYNIGHT]", TIME.timeString(daynight))
+                .replace("[REQVOTES]", requiredVotes + "")
+                .replace("[VOTES]", currentVotes + "")
+                .replace("[TIME]", time + "")
+                .replace("[WORLD]", world)
+                .replace("[STATUS]", status);
+
+        return text;
     }
 
     private String colorize(String text) {
