@@ -58,13 +58,14 @@ public class TimeVote {
                         newTimeVote(args, (Player) sender);
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("reload") && sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG)) {
-                reloadConfig(sender);
-            } else if (playerVoteParams.contains(args[0]) && sender.hasPermission(PERMISSIONS.PLAYER.VOTE)) {
-                if (vote.getIsRunning())
-                    playerVote((Player) sender);
-                else if (!vote.getIsRunning()) // Vote is not running
-                    sender.sendMessage(Utils.colorize(configurator.config.getString("err_not_in_progress")));
+                if (args[0].equalsIgnoreCase("reload") && sender.hasPermission(PERMISSIONS.ADMIN.RELOAD_CONFIG)) {
+                    reloadConfig(sender);
+                } else if (playerVoteParams.contains(args[0]) && sender.hasPermission(PERMISSIONS.PLAYER.VOTE)) {
+                    if (vote.getIsRunning())
+                        playerVote((Player) sender);
+                    else if (!vote.getIsRunning()) // Vote is not running
+                        sender.sendMessage(Utils.colorize(configurator.config.getString("err_not_in_progress")));
+                }
             } else { // No arguments sent
                 if (sender.hasPermission(PERMISSIONS.PLAYER.VOTE) && sender instanceof Player && vote.getIsRunning())
                     playerVote((Player) sender);

@@ -5,12 +5,12 @@
 
 # TimeVote
 
-Spigot 1.11 plugin to allow players to vote to change to either day or night time.
+Spigot 1.11 plugin to allow players to vote to change to day or night or clear the weather.
 
 # Description
 Note: This requires Java 1.8+
 
-Players will vote to change the time in the current world to day or night
+Players will vote to change the time in the current world to day or night or to clear the weather
 
 ### Features:
 - Require a certain percent of players to vote for it to pass
@@ -24,9 +24,9 @@ Players will vote to change the time in the current world to day or night
 
 # Usage
 
-- A player starts a vote with `/TimeVote [new|start] [day|night]`
+- A player starts a vote with `/TimeVote [day|night|clear]`
 - Players in the same world are notified about a time vote
-- Players can use `/TimeVote vote` to vote for whatever the vote was started for (day / night)
+- Players can use `/TimeVote` to vote for whatever the vote was started for (day / night / clear weather)
 
 # Permissions
 [View permissions here](../../blob/master/src/plugin.yml)

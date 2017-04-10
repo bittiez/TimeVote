@@ -21,7 +21,6 @@ public class main extends JavaPlugin {
     private Configurator configurator = new Configurator();
     private Boolean startingCost = true;
     private BukkitScheduler scheduler = getServer().getScheduler();
-    private TimeLapse timeLapse;
     private TimeVote commandHandler;
 
     private static String genVersionOutdatedMessage(String version, String updatedVersion) {
