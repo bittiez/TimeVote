@@ -1,6 +1,5 @@
 package US.bittiez.TimeVote.Vote;
 
-import US.bittiez.TimeVote.TIME;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 

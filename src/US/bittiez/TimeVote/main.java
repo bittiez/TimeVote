@@ -3,6 +3,7 @@ package US.bittiez.TimeVote;
 import US.bittiez.TimeVote.Config.Configurator;
 import US.bittiez.TimeVote.UpdateChecker.UpdateChecker;
 import US.bittiez.TimeVote.UpdateChecker.UpdateStatus;
+import US.bittiez.TimeVote.Vote.TIME;
 import US.bittiez.TimeVote.Vote.VOTE_STATUS;
 import US.bittiez.TimeVote.Vote.Vote;
 import org.bukkit.ChatColor;
@@ -50,7 +51,7 @@ public class main extends JavaPlugin {
                     return true;
                 }
                 if ((args[0].equalsIgnoreCase("new") || args[0].equalsIgnoreCase("start")) && sender.hasPermission(PERMISSIONS.PLAYER.START_VOTE) && sender instanceof Player) {
-                    if (args.length > 1 && (args[1].equalsIgnoreCase("day") || args[1].equalsIgnoreCase("night"))) {
+                    if (args.length > 1 && (args[1].equalsIgnoreCase("day") || args[1].equalsIgnoreCase("night") || args[1].equalsIgnoreCase("clear"))) {
                         if (vote.getIsRunning()) {
                             sender.sendMessage(colorize(configurator.config.getString("err_vote_in_progress")));
                             return true;
@@ -61,6 +62,8 @@ public class main extends JavaPlugin {
                             vote.setDayNight(TIME.DAY);
                         else if (args[1].equalsIgnoreCase("night"))
                             vote.setDayNight(TIME.NIGHT);
+                        else if (args[1].equalsIgnoreCase("clear"))
+                            vote.setDayNight(TIME.CLEAR_WEATHER);
 
                         vote.setWorld(((Player) sender).getWorld());
 
@@ -75,12 +78,10 @@ public class main extends JavaPlugin {
                         if (startingCost) {
                             //CHECK IF PAYMENT GOES THROUGH
                             startVote((Player) sender);
-                        } else {
+                        } else
                             startVote((Player) sender);
-
-                        }
                     } else {
-                        sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night)", "Starts a new time vote."));
+                        sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night|clear)", "Starts a new time vote."));
                     }
                     return true;
                 }
@@ -101,7 +102,7 @@ public class main extends JavaPlugin {
                     sender.sendMessage(genUsageString("/TimeVote reload", "Reloads the config file."));
 
                 if (sender.hasPermission(PERMISSIONS.PLAYER.START_VOTE))
-                    sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night)", "Starts a new time vote."));
+                    sender.sendMessage(genUsageString("/TimeVote (new|start) (day|night|clear)", "Starts a new time vote."));
                 return true;
             }
         }
@@ -197,6 +198,8 @@ public class main extends JavaPlugin {
         } else if (time == TIME.NIGHT) {
             timeLapse = new TimeLapse(world, configurator.config.getLong("night"), this, configurator.config.getLong("time_lapse_speed", 300L));
             timeLapse.Start();
+        } else if (time == TIME.CLEAR_WEATHER) {
+            world.setStorm(false);
         } else {
             log.warning("[M1]There was an error trying to set the world time.");
         }
