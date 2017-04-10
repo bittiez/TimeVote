@@ -8,6 +8,7 @@ public class PERMISSIONS {
         public static final String RECEIVE_UPDATES = "TimeVote.updates";
         public static final String RELOAD_CONFIG = "TimeVote.reload";
     }
+
     public class PLAYER {
         public static final String START_VOTE = "TimeVote.start";
         public static final String VOTE = "TimeVote.vote";

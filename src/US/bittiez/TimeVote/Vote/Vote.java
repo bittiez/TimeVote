@@ -24,21 +24,21 @@ public class Vote {
         UUIDVotes = new ArrayList<UUID>();
     }
 
+    public int getDayNight() {
+        return this.daynight;
+    }
+
     //SETTERS AND GETTERS
     public void setDayNight(int daynight) {
         this.daynight = daynight;
     }
 
-    public int getDayNight() {
-        return this.daynight;
+    public World getWorld() {
+        return world;
     }
 
     public void setWorld(World world) {
         this.world = world;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public void setRunning(Boolean isRunning) {
@@ -53,18 +53,18 @@ public class Vote {
         return votes;
     }
 
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
     public VoteStatus addVote(Player p) {
-        if(UUIDVotes.contains(p.getUniqueId()))
+        if (UUIDVotes.contains(p.getUniqueId()))
             return new VoteStatus(VOTE_STATUS.ALREADY_VOTED);
-        if(p.getWorld() != world)
+        if (p.getWorld() != world)
             return new VoteStatus(VOTE_STATUS.WRONG_WORLD);
         UUIDVotes.add(p.getUniqueId());
         this.votes++;
         return new VoteStatus(VOTE_STATUS.VOTED);
-    }
-
-    public void setVotes(int votes) {
-        this.votes = votes;
     }
 
     public int getRequiredVotes(float percent) {
@@ -82,7 +82,8 @@ public class Vote {
 
     public class VoteStatus {
         public int status;
-        public VoteStatus(int VOTE_STATUS){
+
+        public VoteStatus(int VOTE_STATUS) {
             status = VOTE_STATUS;
         }
     }

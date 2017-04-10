@@ -6,11 +6,11 @@ public class TIME {
     public static final int CLEAR_WEATHER = 2;
 
     public static String timeString(int time) {
-        if(time == TIME.DAY)
+        if (time == TIME.DAY)
             return "day";
-        if(time == TIME.NIGHT)
+        if (time == TIME.NIGHT)
             return "night";
-        if(time == TIME.CLEAR_WEATHER)
+        if (time == TIME.CLEAR_WEATHER)
             return "clear weather";
         return "";
     }
