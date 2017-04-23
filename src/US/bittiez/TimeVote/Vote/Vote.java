@@ -69,7 +69,7 @@ public class Vote {
 
     public int getRequiredVotes(float percent) {
         int playerCount = world.getPlayerCount();
-        return (int) Math.ceil(playerCount * (percent / 100.0f));
+        return (int) Math.floor(playerCount * percent);
     }
 
     public Boolean getPassed() {
