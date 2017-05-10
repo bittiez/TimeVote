@@ -68,7 +68,7 @@ public class Vote {
     }
 
     public int getRequiredVotes(float percent) {
-        int playerCount = world.getPlayerCount();
+        int playerCount = world.getPlayers().size();
         return (int) Math.floor(playerCount * percent);
     }
 
